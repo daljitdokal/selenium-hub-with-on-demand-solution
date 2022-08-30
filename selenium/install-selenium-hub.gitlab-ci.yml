@@ -1,0 +1,19 @@
+##### Required values
+# selenium_namespace
+# application_name
+# route_domain
+# GITLAB_CI_DEFAULT_SELENIUM_HUB_IMAGE
+
+##### Install selenium hub - template
+.install_selenium_hub_template:
+  script:
+    # Deploy selenium hub
+    - envsubst < selenium/selenium-hub.yml | oc --namespace "${selenium_namespace}" create -f -
+    - oc process selenium-hub-${application_name} | oc --namespace "${selenium_namespace}" create -f -
+    
+    # Wait for the deployment to complete
+    - oc --namespace "${openshift_namespace}" rollout status "dc/selenium-hub-${application_name}"
+
+    # Give the user the link to click
+    - echo "Selenium hub is available at the link below:"
+    - echo "https://selenium-hub-${application_name}.${route_domain}"
