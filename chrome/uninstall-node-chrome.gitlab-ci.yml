@@ -1,0 +1,8 @@
+##### Required values
+# selenium_namespace
+# application_name
+
+##### Uninstall chrome - template
+.uninstall_chrome_template:
+  script:
+    - oc --namespace "${selenium_namespace}" delete --ignore-not-found=true --wait=true template,deploymentconfigs,svc,configmap "selenium-node-chrome-${application_name}"
