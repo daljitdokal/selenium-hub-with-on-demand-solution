@@ -1,0 +1,8 @@
+##### Required values
+# selenium_namespace
+# application_name
+
+##### Uninstall selenium hub - template
+.uninstall_selenium_hub_template:
+  script:
+    -  oc --namespace "${selenium_namespace}" delete --ignore-not-found=true --wait=true template,deploymentconfigs,svc,route selenium-hub-${application_name}
