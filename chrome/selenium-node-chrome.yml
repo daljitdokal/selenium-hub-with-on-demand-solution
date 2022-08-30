@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: selenium-node-chrome-${application_name}
+  annotations:
+    description: "Selenium Node with Google Chrome browser"
+    iconClass: "icon-selenium"
+    tags: "selenium,node,chrome"
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: selenium-node-chrome-${application_name}
+  spec:
+    strategy:
+      type: Recreate
+    replicas: ${selenium_chrome_replicas}
+    selector:
+      browser: chrome
+    template:
+      metadata:
+        name: selenium-node-chrome-master
+        labels:
+          browser: chrome
+      spec:
+        containers:
+        - env:
+          - name: JAVA_OPTS
+            value: "-Xmx512m -Dselenium.LOGGER.level=WARNING"
+          - name: SE_OPTS
+            value: "--heartbeat-period 10"
+          - name: HUB_PORT_4444_TCP_ADDR
+            value: "selenium-hub-${application_name}"
+          - name: HUB_PORT_4444_TCP_PORT
+            value: "4444"
+          - name: REMOTE_HOST
+            value: ""
+          - name: SE_EVENT_BUS_HOST
+            value: "selenium-hub-${application_name}"
+          - name: SE_EVENT_BUS_PUBLISH_PORT
+            value: "4442"
+          - name: SE_EVENT_BUS_SUBSCRIBE_PORT
+            value: "4443"
+          image: ${GITLAB_CI_DEFAULT_SELENIUM_CHROME_IMAGE}
+          imagePullPolicy: IfNotPresent
+          name: master
+          ports:
+          - containerPort: 4444
+            protocol: TCP
+          - containerPort: 5555
+            protocol: TCP
+          volumeMounts:
+          - name: config-node-chrome-volume
+            mountPath: /opt/selenium/config.toml
+            subPath: "config.toml"
+        volumes:
+          - name: config-node-chrome-volume
+            configMap:
+              name: selenium-node-chrome-${application_name}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: selenium-node-chrome-${application_name}
+  spec:
+    selector:
+      browser: chrome
+    type: ClusterIP
+    ports:
+    - name: node-port
+      port: 5555
+      targetPort: 5555
+      protocol: TCP
+    - name: node-port-grid
+      port: 4444
+      targetPort: 4444
+      protocol: TCP
+parameters:
+  - name: NODE_ID
+    description: Unique ID assigned to the node
+    generate: expression
+    from: '[a-z]{4}'
