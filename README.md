@@ -33,8 +33,7 @@ include:
     file: '/chrome/uninstall-node-chrome.gitlab-ci.yml'
   - project: 'selenium-hub-with-on-demand-solution'
     file: '/selenium/uninstall-selenium-hub.gitlab-ci.yml'
-  - project: 'selenium-hub-with-on-demand-solution'
-    file: '/reporting/publish-report.gitlab-ci.yml'
+
 
 # Deploy selenium grid
 Deploy Selenium:
@@ -65,10 +64,6 @@ Uninstall Selenium:
   stage: Uninstall Selenium
   extends: .uninstall_selenium_hub_template
 
-# Publish report
-Publish Report:
-  stage: Publish Report
-  extends: .publish_report_template
 ```
 
 ### Set capability to use newly created node chromes
