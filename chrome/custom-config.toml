@@ -1,0 +1,14 @@
+[events]
+publish = "tcp://selenium-hub-${application_name}:4442"
+subscribe = "tcp://selenium-hub-${application_name}:4443"
+
+[node]
+session-timeout = "300"
+override-max-sessions = false
+detect-drivers = false
+max-sessions = 1
+
+[[node.driver-configuration]]
+display-name = "chrome"
+stereotype = '{"browserName": "chrome", "browserVersion": "95.0", "platformName": "Linux", "applicatioName": "${application_name}"}'
+max-sessions = 1
